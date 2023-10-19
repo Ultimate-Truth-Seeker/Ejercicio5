@@ -8,6 +8,7 @@ import java.util.Scanner;
 /**
  * Programa para aplicación de jugadores de volleyball
  * NOTA: se asume que la primera línea contiene datos de un jugador y no nombres del tipo de dato
+ * NOTA: solo se carga un archivo al inicio y se guarda al final
  * 
  * @author Ultimate-Truth-Seeker
  * @version 13-10-2023
@@ -25,14 +26,14 @@ public class Ejercicio5 {
                 sc.useDelimiter(",");
                 String name = sc.next();
                 String country = sc.next();
-                int fails= sc.nextInt();
-                int aces = sc.nextInt();
-                int services = sc.nextInt();
+                int fails= Integer.parseInt(sc.next());
+                int aces = Integer.parseInt(sc.next());
+                int services = Integer.parseInt(sc.next());
                 String det = sc.next();
-                if (det.length() == 1) {
-                    int int1 = (int) det.charAt(0);
+                if (det.charAt(0) != "t".charAt(0) && det.charAt(0) != "f".charAt(0)) {
+                    int int1 = Integer.parseInt(det);
                     if (sc.hasNext()) {
-                        int feints = sc.nextInt();
+                        int feints = Integer.parseInt(sc.next());
                         Feinter f = new Feinter(name, country, fails, aces, services, int1, feints);
                         players.add(f);
                     } else {
@@ -46,16 +47,16 @@ public class Ejercicio5 {
                     } else if (det.equals("false")) {
                         OA = false;
                     }
-                    int atacks = sc.nextInt();
-                    int bloqued = sc.nextInt();
-                    int failedBlock = sc.nextInt();
+                    int atacks = Integer.parseInt(sc.next());
+                    int bloqued = Integer.parseInt(sc.next());
+                    int failedBlock = Integer.parseInt(sc.next());
                     OppositeAuxiliar o = new OppositeAuxiliar(name, country, fails, aces, services, OA, atacks, bloqued, failedBlock);
                     players.add(o);
                 }
             }
             
         } catch (Exception FileNotFoundException) {
-            System.out.println("Error al leer archivo, revise que todos los datos estén correctos");
+            System.out.println("Error al leer archivo, revise que todos los datos estén correctos\nIngresando a menú...");
         }
         while (menu) {
             System.out.println("Bienvenido, elija una opción:\n1.Añadir jugador al sistema\n2.Mostrar todos los jugadores inscritos\n3.Mejores jugadores\n4.Guardar en csv y salir");
@@ -69,12 +70,16 @@ public class Ejercicio5 {
                 String name = s.nextLine();
                 System.out.println("Ingrese el país del jugador:");
                 String country = s.nextLine();
-                System.out.println("Ingrese el número fallos del jugador:");
+                System.out.println("Ingrese el número de fallos del jugador:");
                 int fails = s.nextInt();
                 System.out.println("Ingrese el número de aces del jugador:");
                 int aces = s.nextInt();
                 System.out.println("Ingrese el número de servicios del jugador:");
                 int services = s.nextInt();
+                while (services < aces) {
+                    System.out.println("Los servicios son mayores o iguales a los aces");
+                    services = s.nextInt();
+                }
                 System.out.println("Ingrese 1 si es un líbero, 2 si es un pasador, 3 si es un opuesto, 4 si es un auxiliar");
                 int type = s.nextInt();
                 while (type < 1 && type > 4) {
@@ -132,6 +137,7 @@ public class Ejercicio5 {
                         Sweeper sw = (Sweeper) ply;
                         System.out.println(ply.getName() +"," + ply.getCountry()+","+ply.getFails()+","+ply.getAces()+","+ply.getServices()+","+sw.getEffectiveCatch());
                     }
+                    System.out.println("Efectividad: " + ply.efectivity());
                 }
                 break;
                 case 3:
@@ -144,12 +150,14 @@ public class Ejercicio5 {
                 System.out.println("Los tres mejores Líberos:");
                 int[] indexes = new int[3]; indexes[0] = -1; indexes[1] = -1; indexes[2] = -1;
                 for (int x = 0; x < 3; x++) {
-                    int max = -101; int newindex = -1;
+                    float max = -101; int newindex = -1;
                     for (Player ply : players) {
                         if (ply.getClass() == Sweeper.class && ply.efectivity() >= max) {
                             int trial = players.indexOf(ply);
                             if (indexes[0] != trial && indexes[1] != trial && indexes[2] != trial) {
                                 newindex = trial;
+                                max = ply.efectivity();
+
                             }
                         }
                     }
@@ -164,7 +172,7 @@ public class Ejercicio5 {
                 break;
                 case 4:
                 menu = false;
-                System.out.println("Ingrese el nombre del archivo en que desea guardar los datos o deje en blanco para no guardar");
+                System.out.println("Ingrese el nombre del archivo en que desea guardar los datos o deje en blanco para no guardar. Añada .csv al final.");
                 s.nextLine();
                 path = s.nextLine();
                 if (path.equals("") == false) {
@@ -172,13 +180,13 @@ public class Ejercicio5 {
                         for (Player ply : players) {
                             if (ply.getClass() == OppositeAuxiliar.class) {
                                 OppositeAuxiliar oa = (OppositeAuxiliar) ply;
-                                wr.write(ply.getName() +"," + ply.getCountry()+","+ply.getFails()+","+ply.getAces()+","+ply.getServices()+","+oa.isOA()+","+oa.getAtacks()+","+oa.getBloqued()+","+oa.getFailedBlock());
+                                wr.write(ply.getName() +"," + ply.getCountry()+","+ply.getFails()+","+ply.getAces()+","+ply.getServices()+","+oa.isOA()+","+oa.getAtacks()+","+oa.getBloqued()+","+oa.getFailedBlock()+"\n");
                             } else if (ply.getClass() == Feinter.class) {
                                 Feinter f = (Feinter) ply;
-                                wr.write(ply.getName() +"," + ply.getCountry()+","+ply.getFails()+","+ply.getAces()+","+ply.getServices()+","+f.getPassings()+","+f.getFeints());
+                                wr.write(ply.getName() +"," + ply.getCountry()+","+ply.getFails()+","+ply.getAces()+","+ply.getServices()+","+f.getPassings()+","+f.getFeints()+"\n");
                             } else if (ply.getClass() == Sweeper.class) {
                                 Sweeper sw = (Sweeper) ply;
-                                wr.write(ply.getName() +"," + ply.getCountry()+","+ply.getFails()+","+ply.getAces()+","+ply.getServices()+","+sw.getEffectiveCatch());
+                                wr.write(ply.getName() +"," + ply.getCountry()+","+ply.getFails()+","+ply.getAces()+","+ply.getServices()+","+sw.getEffectiveCatch()+"\n");
                             }
                         }
                         System.out.println("Escritura exitosa");
