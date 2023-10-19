@@ -1,4 +1,4 @@
-package Ejercicio5;
+//package Ejercicio5;
 /**
  * clase para opuesstos y auxiliares
  * @author Ultimate-Truth-Seeker

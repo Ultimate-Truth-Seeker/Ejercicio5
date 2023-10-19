@@ -1,4 +1,4 @@
-package Ejercicio5;
+//package Ejercicio5;
 /**
  * clase para pasadores
  * @author Ultimate-Truth-Seeker

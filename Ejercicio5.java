@@ -1,4 +1,4 @@
-package Ejercicio5;
+//package Ejercicio5;
 
 import java.io.File;
 import java.io.FileWriter;

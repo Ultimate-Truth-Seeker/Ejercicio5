@@ -1,4 +1,4 @@
-package Ejercicio5;
+//package Ejercicio5;
 /**
  * superclase para todos los tipos de jugadores
  * @author Ultimate-Truth-Seeker
